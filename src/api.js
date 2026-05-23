@@ -1,6 +1,3 @@
-// ── Google Gemini API communication ──────────────────────────────
-// Uses gemini-1.5-flash — free tier, no credit card needed
-// Get your free key at: https://aistudio.google.com/apikey
 
 let aborted = false;
 
@@ -8,13 +5,13 @@ const GEMINI_MODEL = 'gemini-1.5-flash';
 const GEMINI_BASE  = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 /**
- * Send a message to Gemini.
+\
  * @param {string} systemPrompt - The system/context prompt
  * @param {string} userMessage  - The user message
  * @param {number} maxTokens    - Max tokens to generate
  * @returns {Promise<string>}   - The text response
  */
-async function callClaude(systemPrompt, userMessage, maxTokens = 1024) {
+async function call(systemPrompt, userMessage, maxTokens = 1024) {
   const apiKey = document.getElementById('api-key').value.trim();
   if (!apiKey) throw new Error('No API key provided. Please enter your Gemini API key from aistudio.google.com/apikey');
 
