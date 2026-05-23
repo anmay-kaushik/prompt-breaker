@@ -1,9 +1,7 @@
-// ── DOM rendering helpers ─────────────────────────────────────────
 
 let allResults = [];
 let currentFilter = 'all';
 
-// ── Utilities ─────────────────────────────────────────────────────
 
 function esc(str) {
   return String(str || '')
@@ -56,8 +54,6 @@ function updateSummary(results) {
   }
 }
 
-// ── Individual test card ──────────────────────────────────────────
-
 function buildTestCard(result) {
   const v   = result.evaluation?.verdict || 'warn';
   const ev  = result.evaluation || {};
@@ -102,7 +98,6 @@ function buildTestCard(result) {
   `;
 }
 
-// ── Loading placeholder card ──────────────────────────────────────
 
 function buildLoadingCard(id, category, input) {
   return `
@@ -123,7 +118,7 @@ function buildLoadingCard(id, category, input) {
   `;
 }
 
-// ── Render all test cards with current filter ─────────────────────
+
 
 function renderTestList() {
   const container = document.getElementById('test-list');
@@ -152,22 +147,20 @@ function setFilter(filter, btn) {
   applyFilter(filter);
 }
 
-// ── Toggle card expand ────────────────────────────────────────────
 
 function toggleCard(id) {
   const el = document.getElementById('tc-' + id);
   if (el) el.classList.toggle('expanded');
 }
 
-// ── Progress bar ──────────────────────────────────────────────────
+// ── Progress bar ──────
 
 function setProgress(pct, label) {
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('prog-label').textContent = label;
 }
 
-// ── Hardened prompt section ───────────────────────────────────────
-
+// ── Hardened prompt section ─────
 function showImprovedPrompt(text) {
   document.getElementById('improved-content').textContent = text;
   document.getElementById('improved-section').style.display = 'flex';
