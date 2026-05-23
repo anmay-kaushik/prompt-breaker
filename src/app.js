@@ -12,18 +12,18 @@ async function runTests() {
 
   // ── Validation ────────────────────────────────────────────────
   if (!apiKey) {
-    showToast('⚠ Please enter your Gemini API key.');
+    showToast('  Gemini API key.');
     document.getElementById('api-key').focus();
     return;
   }
   if (!prompt) {
-    showToast('⚠ Please enter a system prompt to test.');
+    showToast('Please enter a system prompt to test.');
     document.getElementById('prompt-input').focus();
     return;
   }
   if (isRunning) return;
 
-  // ── Setup ─────────────────────────────────────────────────────
+  // ── Setup 
   isRunning = true;
   aborted   = false;
   allResults = [];
@@ -45,7 +45,7 @@ async function runTests() {
   setFilter('all', document.querySelector('.filter-btn[data-filter="all"]'));
 
   try {
-    // ── Phase 1: Generate test cases ──────────────────────────
+    // ── Phase 1: Generate test cases
     setProgress(5, 'Generating adversarial test cases…');
 
     let testCases;
@@ -66,7 +66,7 @@ async function runTests() {
 
     setProgress(15, `Running ${testCases.length} tests against your prompt…`);
 
-    // ── Phase 2: Test each input + evaluate ───────────────────
+    // ── Phase 2: Test each input
     for (let i = 0; i < testCases.length; i++) {
       if (aborted) break;
 
@@ -167,7 +167,7 @@ function showError(msg) {
   document.getElementById('abort-btn').style.display = 'none';
 }
 
-// ── Range slider live update ──────────────────────────────────────
+// ── Range slider live update 
 document.getElementById('test-count').addEventListener('input', function () {
   document.getElementById('test-count-val').textContent = this.value;
 });
