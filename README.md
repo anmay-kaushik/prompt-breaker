@@ -1,6 +1,6 @@
 # PromptBreaker 🛡️
 
-**AI Prompt Stress Tester — A Red-Teaming Tool for LLM System Prompts**
+AI Prompt Stress Tester — A Red-Teaming Tool for LLM System Prompts
 
 A browser-based tool that stress-tests LLM system prompts before deployment by automatically generating adversarial inputs, testing them against your prompt, and producing a detailed security report.
 
@@ -94,12 +94,12 @@ Then open `http://localhost:3000` in your browser.
 ## Tech Stack
 
 - **Pure HTML/CSS/JavaScript** — no build step, no frameworks, no dependencies
-- **Anthropic Messages API** (`claude-sonnet-4-20250514`) — 3 distinct prompt calls per run:
+- **Anthropic Messages API** — 3 distinct prompt calls per run:
   - Generation: adversarial test case creation
   - Testing: running inputs against the target prompt
   - Evaluation: judge LLM for pass/warn/fail verdicts
   - (Optional) Hardening: improved prompt suggestion
-- **Google Fonts** — IBM Plex Mono + Space Grotesk
+  
 
 ---
 
@@ -156,8 +156,6 @@ The separation of generator, testee, and evaluator prevents confirmation bias an
 **Why pure HTML/JS instead of React/Streamlit?**
 Zero dependencies means anyone can clone and open it directly. No npm install, no Python environment.
 
-**Why Claude Sonnet for all three roles?**
-Sonnet balances cost and quality for agentic pipelines. Each call has a focused, well-scoped prompt that doesn't need frontier-level reasoning.
 
 **Why separate evaluator calls instead of self-evaluation?**
 Self-evaluation is biased — the model tends to score its own responses favorably. A fresh context with an explicit evaluator role gives more objective verdicts.
@@ -186,10 +184,3 @@ Each test run (10 cases, moderate intensity) makes approximately:
 - 10 evaluation calls (~150 tokens output each)
 - 1 hardening call (~500 tokens output)
 
-**Approximate cost: ~$0.10–0.20 per full run** using Claude Sonnet.
-
----
-
-## License
-
-MIT — use freely, attribution appreciated.
