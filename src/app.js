@@ -12,12 +12,12 @@ async function runTests() {
 
   // ── Validation ────────────────────────────────────────────────
   if (!apiKey) {
-    showToast('⚠ Please enter your Gemini API key.');
+    showToast('API key.');
     document.getElementById('api-key').focus();
     return;
   }
   if (!prompt) {
-    showToast('⚠ Please enter a system prompt to test.');
+    showToast('Please enter a system prompt to test.');
     document.getElementById('prompt-input').focus();
     return;
   }
@@ -45,7 +45,7 @@ async function runTests() {
   setFilter('all', document.querySelector('.filter-btn[data-filter="all"]'));
 
   try {
-    // ── Phase 1: Generate test cases ──────────────────────────
+    // ── Phase 1: Generate test cases
     setProgress(5, 'Generating adversarial test cases…');
 
     let testCases;
@@ -66,7 +66,7 @@ async function runTests() {
 
     setProgress(15, `Running ${testCases.length} tests against your prompt…`);
 
-    // ── Phase 2: Test each input + evaluate ───────────────────
+    
     for (let i = 0; i < testCases.length; i++) {
       if (aborted) break;
 
