@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PromptBreaker — AI Prompt Stress Tester</title>
+  <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+
+<div class="shell">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="logo-text">PromptBreaker</div>
+          <div class="logo-sub">red-team stress tester</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-body">
+      <!-- API Key -->
+      <div class="field-group">
+        <label for="api-key">
+          Anthropic API Key
+          <a href="https://console.anthropic.com/settings/keys" target="_blank" class="label-link">Get one →</a>
+        </label>
+        <div class="input-wrap">
+          <input type="password" id="api-key" placeholder="sk-ant-..." autocomplete="off">
+          <button class="toggle-key" onclick="toggleKeyVisibility()" title="Show/hide key">👁</button>
+        </div>
+        <div class="field-hint">Stored only in your browser session. Never sent anywhere except Anthropic's API.</div>
+      </div>
+
+      <!-- System Prompt -->
+      <div class="field-group">
+        <label for="prompt-input">System Prompt to Test</label>
+        <textarea id="prompt-input" rows="10" placeholder="Paste your system prompt here…&#10;&#10;Example:&#10;You are a helpful customer support agent for AcmeCorp. Only answer questions about our software products. Be polite and professional at all times."></textarea>
+      </div>
+
+      <!-- Example prompts -->
+      <div class="field-group">
+        <label>Quick Examples</label>
+        <div class="example-btns">
+          <button class="example-btn" onclick="loadExample('support')">Customer Support</button>
+          <button class="example-btn" onclick="loadExample('tutor')">AI Tutor</button>
+          <button class="example-btn" onclick="loadExample('assistant')">Personal Assistant</button>
+        </div>
+      </div>
+
+      <!-- Test count -->
+      <div class="field-group">
+        <label for="test-count">Number of Test Cases <span id="test-count-val" class="range-badge">10</span></label>
+        <input type="range" id="test-count" min="5" max="15" value="10" step="1">
+      </div>
+
+      <!-- Intensity -->
+      <div class="field-group">
+        <label for="hardness">Attack Intensity</label>
+        <select id="hardness">
+          <option value="mild">Mild — realistic user edge cases</option>
+          <option value="moderate" selected>Moderate — deliberate probing</option>
+          <option value="aggressive">Aggressive — active adversarial</option>
+        </select>
+      </div>
+
+      <!-- Options -->
+      <div class="field-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="suggest-fix" checked>
+          <span>Suggest hardened prompt</span>
+        </label>
+        <label class="checkbox-label" style="margin-top:8px;">
+          <input type="checkbox" id="auto-expand">
+          <span>Auto-expand failures</span>
+        </label>
+      </div>
+
+      <button class="run-btn" id="run-btn" onclick="runTests()">
+        <span id="run-btn-text">▶ Run Stress Test</span>
+      </button>
+
+      <!-- Progress -->
+      <div id="progress-wrap" style="display:none;">
+        <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+        <div class="progress-label" id="prog-label">Initializing…</div>
+      </div>
+
+      <!-- Abort -->
+      <button class="abort-btn" id="abort-btn" style="display:none;" onclick="abortTests()">✕ Stop</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main" id="main">
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+      </div>
+      <h2 class="empty-title">No tests run yet</h2>
+      <p class="empty-desc">Paste any LLM system prompt in the sidebar, configure your test settings, and click <strong>Run Stress Test</strong> to generate adversarial inputs and get a full security report.</p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <div class="feature-name">Adversarial Inputs</div>
+          <div class="feature-desc">Jailbreaks, overrides, persona attacks, manipulation</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔬</div>
+          <div class="feature-name">Live Testing</div>
+          <div class="feature-desc">Each case tested against your actual prompt</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-name">Detailed Report</div>
+          <div class="feature-desc">Pass/warn/fail with explained failure types</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-name">Auto Hardening</div>
+          <div class="feature-desc">Suggested improved prompt based on failures</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results area -->
+    <div id="results-area" style="display:none;">
+
+      <!-- Summary cards -->
+      <div class="summary-grid" id="summary-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total</div>
+          <div class="stat-val accent" id="stat-total">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Passed</div>
+          <div class="stat-val ok" id="stat-pass">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Warnings</div>
+          <div class="stat-val warn" id="stat-warn">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Failed</div>
+          <div class="stat-val fail" id="stat-fail">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Robustness</div>
+          <div class="stat-val" id="stat-score">—</div>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" data-filter="fail" onclick="setFilter('fail', this)">Failures</button>
+        <button class="filter-btn" data-filter="warn" onclick="setFilter('warn', this)">Warnings</button>
+        <button class="filter-btn" data-filter="pass" onclick="setFilter('pass', this)">Passed</button>
+        <div style="flex:1;"></div>
+        <button class="icon-btn" onclick="exportReport()" title="Export JSON report">⬇ Export</button>
+        <button class="icon-btn" onclick="copyReport()" title="Copy report">⎘ Copy</button>
+      </div>
+
+      <!-- Test cards -->
+      <div id="test-list"></div>
+
+      <!-- Improved prompt -->
+      <div id="improved-section" style="display:none;">
+        <div class="section-title"><span>Hardened Prompt Suggestion</span></div>
+        <div class="improved-box">
+          <div class="improved-header">
+            <div class="improved-badge">🛡 AI-Generated Fix</div>
+            <button class="copy-btn" onclick="copyImproved()">Copy prompt</button>
+          </div>
+          <pre id="improved-content" class="improved-pre"></pre>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="src/examples.js"></script>
+<script src="src/api.js"></script>
+<script src="src/evaluator.js"></script>
+<script src="src/renderer.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
