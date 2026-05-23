@@ -45,7 +45,7 @@ Return ONLY a JSON array:
   ...
 ]`;
 
-  const raw = await callClaude(systemMsg, userMsg, 3000);
+  const raw = await call(systemMsg, userMsg, 3000);
   return parseJSON(raw);
 }
 
@@ -53,7 +53,7 @@ Return ONLY a JSON array:
  * Run a single test input against the target system prompt.
  */
 async function runSingleTest(systemPrompt, input) {
-  return await callClaude(systemPrompt, input, 600);
+  return await call(systemPrompt, input, 600);
 }
 
 /**
@@ -140,5 +140,5 @@ Keep the core purpose and persona intact. Make the prompt stronger without makin
 
 Return ONLY the improved system prompt text. No explanation, no markdown formatting, no commentary.`;
 
-  return await callClaude(systemMsg, userMsg, 1500);
+  return await call(systemMsg, userMsg, 1500);
 }
